@@ -3,7 +3,6 @@ var client;
 var mymap;
 
 function getEarthquakes() {
-  alert("getting Earthquakes");
    client = new XMLHttpRequest();
    client.open('GET','https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
    client.onreadystatechange = earthquakeResponse;  // note don't use earthquakeResponse() with brackets as that doesn't work
@@ -13,10 +12,8 @@ function getEarthquakes() {
 function earthquakeResponse() {
   // this function listens out for the server to say that the data is ready - i.e. has state 4
   if (client.readyState == 4) {
-    alert("setting earthquakes");
     // once the data is ready, process the data
     var earthquakedata = client.responseText;
-    alert(earthquakedata);
     loadGeoJSONLayer(earthquakedata);
     }
 }
@@ -30,4 +27,17 @@ function loadGeoJSONLayer(earthquakedata) {
 
     // change the map zoom so that all the data is shown
     mymap.fitBounds(geojsonLayer.getBounds());
+}
+
+function trackLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(showPosition);
+    } else {
+        document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+function showPosition(position) {
+    
+    L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
+    .bindPopup("This is location lat/lon: "+ position.coords.latitude + " "+ position.coords.longitude);
 }
