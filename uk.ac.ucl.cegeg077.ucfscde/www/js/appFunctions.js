@@ -1,7 +1,7 @@
 // create the code to get the Earthquakes data using an XMLHttpRequest
 var client;
 var mymap;
-
+var navigatorid;
 function getEarthquakes() {
    client = new XMLHttpRequest();
    client.open('GET','https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
@@ -31,7 +31,7 @@ function loadGeoJSONLayer(earthquakedata) {
 
 function trackLocation() {
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(showPosition);
+        navigatorid =navigator.geolocation.watchPosition(showPosition);
     } else {
         document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
     }
@@ -40,4 +40,8 @@ function showPosition(position) {
     
     L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap)
     .bindPopup("This is location lat/lon: "+ position.coords.latitude + " "+ position.coords.longitude);
+}
+
+function stopTrackLocation(){
+    navigator.geolocation.clearWatch(navigatorid);
 }
